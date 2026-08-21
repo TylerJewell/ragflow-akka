@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.akka</groupId>
+        <artifactId>akka-javasdk-parent</artifactId>
+        <version>3.6.3</version>
+    </parent>
+    <groupId>io.akka</groupId>
+    <artifactId>ragflow-akka</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>ragflow-akka</name>
+
+    <dependencies>
+        <!-- Reads the embedded text layer of a PDF, page by page (question-log row 8,
+             SPEC-001 §4 decision 1). No layout/OCR/table detection: those are three
+             ONNX models and an XGBoost classifier in the source, out of scope here. -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- cl100k_base token counting, the same encoding the source's num_tokens_from_string
+             uses (common/token_utils.py:45), so the merge/overlap arithmetic in SPEC-001 §3
+             lands on the same chunk boundaries for the same input. -->
+        <dependency>
+            <groupId>com.knuddels</groupId>
+            <artifactId>jtokkit</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+    </dependencies>
+</project>
