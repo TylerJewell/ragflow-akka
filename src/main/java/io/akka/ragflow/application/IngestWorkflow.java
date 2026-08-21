@@ -54,6 +54,7 @@ public class IngestWorkflow extends Workflow<IngestWorkflow.State> {
   @Override
   public WorkflowSettings settings() {
     return WorkflowSettings.builder()
+        .timeout(Duration.ofMinutes(10))
         .defaultStepTimeout(Duration.ofSeconds(30))
         .stepRecovery(
             IngestWorkflow::runPipeline,

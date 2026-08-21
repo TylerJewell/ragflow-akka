@@ -19,23 +19,23 @@ import java.util.List;
 @Component(id = "chunk-index")
 public class ChunkView extends View {
 
-  public record TaskChunks(String taskId, String docId, List<Chunk> chunks) {}
+  public record TaskEntry(String taskId, String docId, List<Chunk> chunks) {}
 
-  public record TaskChunksList(List<TaskChunks> tasks) {}
+  public record TaskEntries(List<TaskEntry> tasks) {}
 
   @Query("SELECT * AS tasks FROM chunk_index WHERE docId = :docId")
-  public QueryEffect<TaskChunksList> forDocument(String docId) {
+  public QueryEffect<TaskEntries> forDocument(String docId) {
     return queryResult();
   }
 
   @Consume.FromEventSourcedEntity(TaskEntity.class)
-  public static class Updater extends TableUpdater<TaskChunks> {
+  public static class Updater extends TableUpdater<TaskEntry> {
 
-    public Effect<TaskChunks> onEvent(TaskEvent event) {
+    public Effect<TaskEntry> onEvent(TaskEvent event) {
       String taskId = updateContext().eventSubject().orElseThrow();
       return switch (event) {
-        case TaskEvent.Indexed e -> effects().updateRow(new TaskChunks(taskId, e.docId(), e.chunks()));
-        case TaskEvent.Reused e -> effects().updateRow(new TaskChunks(taskId, e.docId(), e.chunks()));
+        case TaskEvent.Indexed e -> effects().updateRow(new TaskEntry(taskId, e.docId(), e.chunks()));
+        case TaskEvent.Reused e -> effects().updateRow(new TaskEntry(taskId, e.docId(), e.chunks()));
         default -> effects().ignore();
       };
     }
